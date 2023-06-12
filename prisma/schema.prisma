@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Vercel build dependency caching workaround:请查看prisma官网
+
+// 生成的客户端
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 数据库类型和连接地址
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String?        @unique
+  emailVerified   DateTime?
+  image           String?
+  hashedPassword  String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  // 表示用户创建的所有会话
+  conversationIds String[]       @db.ObjectId
+  conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
+  // 表示用户创建的所有消息
+  seenMessageIds  String[]       @db.ObjectId
+  seenMessages    Message[]      @relation("Seen", fields: [seenMessageIds], references: [id])
+  // 表示用户的所有账户
+  accounts        Account[]
+  // 表示用户的所有消息
+  messages        Message[]
+}
+
+model Account {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+
+  refresh_token String? @db.String
+  access_token  String? @db.String
+  expires_at    Int?
+  token_type    String?
+  id_token      String? @db.String
+  session_state String?
+  scope         String?
+  // oauth_token_secret       String?
+  // oauth_token              String?
+  // refresh_token_expires_in Int?
+
+  // 表示账户所属的用户
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 表示账户的唯一性
+  @@unique([provider, providerAccountId])
+}
+
+model Conversation {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt     DateTime  @default(now())
+  lastMessageAt DateTime  @default(now())
+  name          String?
+  isGroup       Boolean?
+  // 表示会话中的所有消息
+  messageIds    String[]  @db.ObjectId
+  messages      Message[]
+  // 表示会话中的所有用户
+  userIds       String[]  @db.ObjectId
+  users         User[]    @relation(fields: [userIds], references: [id])
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  body      String?
+  image     String?
+  createdAt DateTime @default(now())
+
+  // 表示消息被哪些用户看过
+  seenIds        String[]     @db.ObjectId
+  seenBy         User[]       @relation("Seen", fields: [seenIds], references: [id])
+  // 表示消息所属的会话
+  conversationId String       @db.ObjectId
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  // 表示消息的发送者
+  senderId       String       @db.ObjectId
+  sender         User         @relation(fields: [senderId], references: [id])
+}
