@@ -1,3 +1,5 @@
+const forms = require('@tailwindcss/forms')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -7,12 +9,15 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
+      colors: {
+        primary: '#087ea4',
+        secondary: '#0d6d8c',
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    forms({
+      strategy: 'class',
+    }),
+  ],
 }

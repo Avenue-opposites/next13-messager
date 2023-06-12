@@ -1,3 +1,19 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    // tab缩进2个空格
+    "indent": ["error", 2],
+    // 使用单引号
+    "quotes": ["error", "single"],
+    // 不允许使用分号
+    "semi": ["error", "never"],
+    // JSX的HTML属性使用双引号
+    "jsx-quotes": ["error", "prefer-double"],
+    // 所有的冒号后面必须加空格
+    "key-spacing": ["error", { "afterColon": true }],
+    // 不允许出现多个空格
+    "no-multi-spaces": "error",
+    // 操作符周围需要空格
+    "space-infix-ops": "error",
+  }
 }
