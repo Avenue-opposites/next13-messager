@@ -206,7 +206,6 @@ function signInThen(
   router?: AppRouterInstance
 ) {
   const { error,ok } = response || {}
-  console.log(response);
   
   if(error) {
     toast.error(error)
