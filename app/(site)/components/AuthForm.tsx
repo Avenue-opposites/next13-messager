@@ -3,7 +3,7 @@
 import axios from 'axios'
 import { useState, useCallback } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { BsGithub, BsGoogle } from 'react-icons/bs'
+import { BsGithub, BsGoogle, BsWechat } from 'react-icons/bs'
 import { toast } from 'react-hot-toast'
 import { signIn, SignInResponse } from 'next-auth/react'
 
@@ -12,10 +12,11 @@ import type { FormDate } from '~/types'
 import Input from '~/app/components/inputs/Input'
 import Button from '~/app/components/Button'
 import AuthSocialButton from './AuthSocialButton'
+import { isChina } from '~/utils'
 
 // 表示登录或注册
 type Variant = 'LOGIN' | 'REGISTER'
-type SocialAction = 'github' | 'google'
+type SocialAction = 'github' | 'google' | 'wechat'
 
 const AuthForm = () => {
   const [ variant, setVariant ] = useState<Variant>('LOGIN')
@@ -72,7 +73,18 @@ const AuthForm = () => {
 
   const socialAction = (action: SocialAction) => {
     setIsLoading(true)
-    console.log("action",action);
+
+    if(action === 'wechat') {
+      //微信登录
+      toast.error('暂不支持微信登录,请使用邮箱注册')
+      return
+    }
+
+    if(isChina()) {
+      toast.error('暂不支持中国大陆地区,原因:DNS污染,请使用邮箱注册')
+      setIsLoading(false)
+      return
+    }
 
     signIn(action,{ redirect: false })
     .then(signInThen)
@@ -146,6 +158,10 @@ const AuthForm = () => {
             <AuthSocialButton 
               icon={BsGoogle} 
               onClick={() => socialAction('google')} 
+            />
+            <AuthSocialButton 
+              icon={BsWechat} 
+              onClick={() => socialAction('wechat')} 
             />
           </div>
           <p 

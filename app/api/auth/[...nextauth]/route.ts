@@ -28,6 +28,7 @@ export const authOptions: AuthOptions = {
     }),
     // Google
     Google({
+      // 需要在Google Cloud Platform中配置OAuth2.0客户端ID
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
