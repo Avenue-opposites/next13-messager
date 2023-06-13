@@ -1,6 +1,7 @@
 import './globals.css'
 import localFont from 'next/font/local'
 import ToasterContext from './context/ToasterContext'
+import AuthContext from './context/AuthContext'
 
 export const metadata = {
   title: 'React-messenger',
@@ -21,7 +22,9 @@ export default function RootLayout({
     <html lang="en" className={PingFangBold.className}>
       <body>
         <ToasterContext />
-        {children}
+        <AuthContext>
+          {children}
+        </AuthContext>
       </body>
     </html>
   )
