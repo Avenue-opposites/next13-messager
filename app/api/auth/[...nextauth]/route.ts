@@ -20,11 +20,11 @@ export const authOptions: AuthOptions = {
       /*
         如果使用加速器的话可能会出现以下错误
         Error: unable to verify the first certificate
-        不使用加速器可能请求会超时,默认为3500ms,所以修改超时时间为10s
+        不使用加速器可能请求会超时,默认为3500ms,所以修改超时时间为30s
       */
       httpOptions: {
-        timeout: 10000
-      }
+        timeout: 30000,
+      },
     }),
     // Google
     Google({
@@ -54,7 +54,7 @@ export const authOptions: AuthOptions = {
         })
 
         // 验证用户,如果用户不存在或者哈希密码不存在,则抛出错误
-        if(!user || !user.hashedPassword) {
+        if(!user?.hashedPassword) {
           throw new Error("Invalid Credentials");
         }
 
