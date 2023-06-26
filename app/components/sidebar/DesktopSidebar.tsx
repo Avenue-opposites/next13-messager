@@ -20,6 +20,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     <div 
       className="
         hidden
+        py-4
         lg:fixed
         lg:left-0
         lg:inset-0
@@ -33,7 +34,7 @@ const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
         xl:px-6
       "
     >
-      <nav className="mt-4 flex flex-col justify-between">
+      <nav className="flex flex-col justify-between">
         <ul 
           role="list" 
           className="

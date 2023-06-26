@@ -5,7 +5,8 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const { email, name, password } = await request.json()
+    const body = await request.json()
+    const { email, name, password } = body
 
     if(!email || !name || !password) {
       return new NextResponse('Missing information', { status: 400 })
