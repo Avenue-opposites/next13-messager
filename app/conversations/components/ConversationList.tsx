@@ -22,6 +22,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
   return (
     <aside
       className={clsx(`
+          w-0
           fixed
           inset-0
           pb-20
@@ -32,7 +33,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           border-r
         border-gray-200
         `,
-          isOpen ? 'hidden' : 'block w-full left-0'
+        isOpen ? 'block left-0' : 'hidden'
         )}
     >
       <div className="px-5">

@@ -15,22 +15,25 @@ export const authOptions: AuthOptions = {
   providers: [
     // Github
     Github({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
       /*
         如果使用加速器的话可能会出现以下错误
         Error: unable to verify the first certificate
-        不使用加速器可能请求会超时,默认为3500ms,所以修改超时时间为30s
+        不使用加速器可能请求会超时,默认为3500ms,所以修改超时时间为5s
       */
       httpOptions: {
-        timeout: 30000,
+        timeout: 5000,
       },
     }),
     // Google
     Google({
       // 需要在Google Cloud Platform中配置OAuth2.0客户端ID
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string,
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      httpOptions: {
+        timeout: 5000,
+      }
     }),
     // 凭证
     Credentials({

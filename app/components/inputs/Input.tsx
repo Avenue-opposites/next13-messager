@@ -4,7 +4,7 @@ import {
   FieldErrors,  
   UseFormRegister 
 } from 'react-hook-form'
-import type { FormDate } from '~/types'
+import type { FormDate } from '~/app/(site)/components/AuthForm'
 
 interface InputProps {
   label: string;

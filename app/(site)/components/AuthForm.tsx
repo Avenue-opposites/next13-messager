@@ -2,13 +2,11 @@
 
 import axios from 'axios'
 import { useState, useCallback, useEffect } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FieldValues } from 'react-hook-form'
 import { BsGithub, BsGoogle, BsWechat } from 'react-icons/bs'
 import { toast } from 'react-hot-toast'
 import { signIn, SignInResponse, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-
-import type { FormDate } from '~/types'
 
 import Input from '~/app/components/inputs/Input'
 import Button from '~/app/components/Button'
@@ -19,6 +17,11 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context'
 // 表示登录或注册
 type Variant = 'LOGIN' | 'REGISTER'
 type SocialAction = 'github' | 'google' | 'wechat'
+export type FormDate = {
+  name: string;
+  email: string;
+  password: string;
+} & FieldValues
 
 const AuthForm = () => {
   const router = useRouter()
@@ -94,11 +97,11 @@ const AuthForm = () => {
       return
     }
 
-    if(isChina()) {
-      toast.error('暂不支持中国大陆地区,原因:DNS污染,请使用邮箱注册')
-      setIsLoading(false)
-      return
-    }
+    // if(isChina()) {
+    //   toast.error('暂不支持中国大陆地区,原因:DNS污染,请使用邮箱注册')
+    //   setIsLoading(false)
+    //   return
+    // }
 
     signIn(action,{ redirect: false })
     .then(signInThen)

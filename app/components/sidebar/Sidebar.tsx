@@ -13,7 +13,7 @@ export default async function Sidebar({
     <div className="h-full">
       <DesktopSidebar user={user!} />
       <MobileFooter user={user!} />
-      <main className="lg:pl-20 h-full">
+      <main className="lg:pl-20 h-screen">
         {children}
       </main>
     </div>

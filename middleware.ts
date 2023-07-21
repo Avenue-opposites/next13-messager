@@ -13,5 +13,6 @@ export const config = {
   matcher: [
     // 匹配users目录下的所有文件为路由
     '/users/:path*',
+    '/conversations/:path*'
   ]
 }
