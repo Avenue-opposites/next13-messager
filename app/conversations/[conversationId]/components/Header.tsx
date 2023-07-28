@@ -1,11 +1,12 @@
 'use client'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useMemo, Fragment, useState } from 'react'
 import { HiChevronLeft, HiEllipsisHorizontal } from 'react-icons/hi2'
 import Avatar from '~/app/components/Avatar'
 
 import useOtherUser from '~/app/hooks/useOtherUser'
 import { FullConversationType } from '~/types'
+import ProfileDrawer from './ProfileDrawer'
 
 interface HeaderProps {
   conversation: Omit<FullConversationType, 'messages'>
@@ -15,6 +16,7 @@ const Header:React.FC<HeaderProps> = ({
   conversation
 }) => {
   const otherUser = useOtherUser(conversation)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   const statusText = useMemo(() => {
     if(conversation.isGroup) {
       return `${conversation.users.length} members`
@@ -23,7 +25,13 @@ const Header:React.FC<HeaderProps> = ({
     return 'Active'
   },[conversation])
   return (
-    <div 
+    <Fragment> 
+      <ProfileDrawer 
+        data={conversation}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
+      <div 
       className="
         bg-white
         w-full
@@ -60,15 +68,17 @@ const Header:React.FC<HeaderProps> = ({
         </div>
       </div>
       <HiEllipsisHorizontal 
-        size={32} 
         className="
           text-sky-500 
           cursor-pointer 
           hover:text-sky-600 
           transition-colors
           "
+        size={32} 
+        onClick={() => setDrawerOpen(true)}
       />
-    </div>
+      </div>
+    </Fragment>
   )
 }
 
