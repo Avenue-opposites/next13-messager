@@ -11,10 +11,10 @@ const UserList: React.FC<UserListProps> = ({
 }) => {
 
   return (
-    <aside 
+    <aside
       className="
         fixed 
-        inset-y-0
+        inset-0
         pb-20
         overflow-y-auto
         border-r
@@ -27,7 +27,7 @@ const UserList: React.FC<UserListProps> = ({
     >
       <div className="px-5">
         <div className="flex flex-col">
-          <div 
+          <div
             className="
               text-2xl
               font-bold text-neutral-800

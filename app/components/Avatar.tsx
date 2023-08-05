@@ -1,5 +1,6 @@
-import { User } from "@prisma/client"
-import Image from "next/image"
+import { User } from '@prisma/client'
+import Image from 'next/image'
+import useActiveList from '../hooks/useActiveList'
 
 interface AvatarProps {
   user?: User
@@ -9,9 +10,11 @@ interface AvatarProps {
 const Avatar: React.FC<AvatarProps> = ({
   user
 }) => {
+  const { members } = useActiveList()
+  const isActive = members.includes(user?.email!)
   return (
     <div className="relative h-9 w-9 md:h-11 md:w-11">
-      <div 
+      <div
         className="
           relative 
           inline-block
@@ -20,13 +23,13 @@ const Avatar: React.FC<AvatarProps> = ({
           w-full h-full
         "
       >
-        <Image 
-          src={user?.image || '/images/placeholder.jpg'} 
+        <Image
+          src={user?.image || '/images/placeholder.jpg'}
           alt="Avatar" fill
         />
       </div>
       {/* 表示用户是否活跃的绿点 */}
-      <span 
+      {isActive && <span
         className="
           absolute
           block
@@ -36,7 +39,7 @@ const Avatar: React.FC<AvatarProps> = ({
           top-0 right-0
           md:w-3 md:h-3
         "
-      />
+      />}
     </div>
   )
 }

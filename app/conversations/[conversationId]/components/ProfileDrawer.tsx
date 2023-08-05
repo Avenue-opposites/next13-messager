@@ -7,7 +7,9 @@ import { Dialog, Transition } from '@headlessui/react'
 import { IoClose, IoTrash } from 'react-icons/io5'
 import useOtherUser from '~/app/hooks/useOtherUser'
 import Avatar from '~/app/components/Avatar'
-import Model from '~/app/components/Model'
+import ConfirmModal from './ConfirmModal'
+import AvatarGroup from '~/app/components/AvaterGroup'
+import useActiveList from '~/app/hooks/useActiveList'
 
 interface ProfileDrawerProps {
   data: Conversation & {
@@ -24,39 +26,39 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 }) => {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const otherUser = useOtherUser(data)
+  const { members } = useActiveList()
+  const isActive = members.includes(otherUser.email!)
   const joinedDate = useMemo(
-    () => format(new Date(otherUser.createdAt), 'PP'), 
+    () => format(new Date(otherUser.createdAt), 'PP'),
     [otherUser.createdAt]
   )
 
   const title = useMemo(
-    () => data.name || otherUser.name, 
+    () => data.name || otherUser.name,
     [data.name, otherUser.name]
   )
 
-  const statusText =  useMemo(() => {
-    if(data.isGroup) {
+  const statusText = useMemo(() => {
+    if (data.isGroup) {
       return `${data.users.length} members`
     }
 
-    return 'Active'
-  }, [data])
+    return isActive ? 'Active' : 'Offline'
+  }, [data, isActive])
 
   return (
     <Fragment>
-      <Model 
-        isOpen={confirmOpen} 
+      <ConfirmModal
+        isOpen={confirmOpen}
         onClose={() => setConfirmOpen(false)}
-      >
-        <h2>Hello,Model!</h2>
-      </Model>
+      />
       <Transition.Root show={isOpen} as={Fragment}>
-        <Dialog 
+        <Dialog
           as="div"
           className="relative z-50"
           onClose={onClose}
         >
-          <Transition.Child 
+          <Transition.Child
             as={Fragment}
             enter="ease-out duration-500"
             enterFrom="opacity-0"
@@ -65,13 +67,13 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0 "
           >
-            <div 
+            <div
               className="
                 fixed
                 inset-0
                 bg-black
                 bg-opacity-40
-              " 
+              "
             />
           </Transition.Child>
           <div
@@ -126,24 +128,24 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                       "
                     >
                       <div className="px-4 sm:px-6">
-                        <div 
+                        <div
                           className="
                             flex
                             items-start
                             justify-end
                           "
-                          >
-                            <div 
-                              className="
+                        >
+                          <div
+                            className="
                                 ml-3
                                 flex
                                 h-7
                                 items-center
                               "
-                            >
-                              <button
-                                type="button"
-                                className="
+                          >
+                            <button
+                              type="button"
+                              className="
                                 rounded-md
                                 bg-white
                                 text-gray-400
@@ -152,16 +154,16 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                 focus:ring-2
                                 focus:ring-offset-2
                                 "
-                                onClick={onClose}
-                              >
-                                <span className="sr-only">Close panel</span>
-                                <IoClose size={24} />
-                              </button>
-                            </div>
+                              onClick={onClose}
+                            >
+                              <span className="sr-only">Close panel</span>
+                              <IoClose size={24} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div
-                      className="
+                        className="
                         relative mt-6
                         flex-1 px-4
                         sm:px-6
@@ -173,23 +175,27 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           "
                         >
                           <div className="mb-2">
-                            <Avatar user={otherUser} />
+                            {
+                              data.isGroup
+                                ? <AvatarGroup users={data.users} />
+                                : <Avatar user={otherUser} />
+                            }
                           </div>
                           <div>{title}</div>
                           <div className="text-sm text-gray-500">
                             {statusText}
                           </div>
                           <div className="flex gap-10 my-8">
-                            <div 
+                            <div
                               className="
                                 flex flex-col items-center
                                 cursor-pointer
                                 transition-colors
                                 hover:opacity-75
-                              " 
+                              "
                               onClick={() => setConfirmOpen(true)}
                             >
-                              <div 
+                              <div
                                 className="
                                   w-10 h-10
                                   bg-neutral-100
@@ -200,7 +206,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                 <IoTrash size={20} />
                               </div>
                               <div
-                              className="
+                                className="
                                 text-sm
                                 font-light
                                 text-neutral-600
@@ -210,7 +216,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                               </div>
                             </div>
                           </div>
-                          <div 
+                          <div
                             className="
                               w-full
                               py-5
@@ -225,29 +231,57 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                 sm:py-6
                               "
                             >
-                              {!data.isGroup && (
-                                <div>
-                                  <dt
-                                    className="
-                                      text-sm
-                                      font-medium
-                                      text-gray-500
-                                      sm:w-40
-                                      sm:flex-shrink-0
-                                    "
-                                  >
-                                    Email
-                                  </dt>
-                                  <dd
-                                    className="
-                                      mt-1 text-sm text-gray-900
-                                      sm:col-span-2
-                                    "
-                                  >
-                                    {otherUser.email}
-                                  </dd>
-                                </div>
-                              )}
+                              {
+                                data.isGroup
+                                  ? (
+                                    <div>
+                                      <dt
+                                        className="
+                                          text-sm
+                                          font-medium
+                                        text-gray-500
+                                          sm:w-40
+                                          sm:flex-shrink-0
+                                        "
+                                      >
+                                        Emails
+                                      </dt>
+                                      <dd
+                                        className="
+                                          mt-1 text-sm text-gray-900
+                                          sm:col-span-2
+                                        "
+                                      >
+                                        {
+                                          data.users.map(user => user.email).join(', ')
+                                        }
+                                      </dd>
+                                    </div>
+                                  )
+                                  : (
+                                    <div>
+                                      <dt
+                                        className="
+                                        text-sm
+                                        font-medium
+                                        text-gray-500
+                                        sm:w-40
+                                        sm:flex-shrink-0
+                                      "
+                                      >
+                                        Email
+                                      </dt>
+                                      <dd
+                                        className="
+                                        mt-1 text-sm text-gray-900
+                                        sm:col-span-2
+                                      "
+                                      >
+                                        {otherUser.email}
+                                      </dd>
+                                    </div>
+                                  )
+                              }
                               {!data.isGroup && (
                                 <Fragment>
                                   <hr />
@@ -288,7 +322,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
               </div>
             </div>
           </div>
-        </Dialog> 
+        </Dialog>
       </Transition.Root>
     </Fragment>
   )

@@ -6,13 +6,15 @@ import Avatar from '~/app/components/Avatar'
 import { FullMessageType } from '~/types'
 
 interface MessageBoxProps {
-    data: FullMessageType,
-    isLast: boolean
+    data: FullMessageType;
+    isLast: boolean;
+    onClickImage: (image: string) => void;
 }
 
 const MessageBox: React.FC<MessageBoxProps> = ({
     data,
-    isLast
+    isLast,
+    onClickImage
 }) => {
     const session = useSession()
     //当前用户是否为这条信息的发送人
@@ -44,6 +46,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
         isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100',
         data.image ? 'p-0' : 'py-2 px-3'
     )
+    
     return (
         <div className={container}>
             <div className={avatar}>
@@ -62,6 +65,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
                     {
                         data.image ? 
                         <Image
+                        onClick={() => onClickImage(data.image!)}
                         width={288}
                         height={288}
                         src={data.image}

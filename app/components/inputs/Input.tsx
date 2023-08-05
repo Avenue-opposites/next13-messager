@@ -2,6 +2,7 @@
 import clsx from 'clsx'
 import { 
   FieldErrors,  
+  FieldValues,  
   UseFormRegister 
 } from 'react-hook-form'
 import type { FormDate } from '~/app/(site)/components/AuthForm'
@@ -11,8 +12,8 @@ interface InputProps {
   name: string;
   type?: string;
   required?: boolean;
-  register: UseFormRegister<FormDate>;
-  errors: FieldErrors<FormDate>;
+  register: UseFormRegister<FieldValues | any>;
+  errors: FieldErrors<FieldValues>;
   disabled?: boolean;
 }
 

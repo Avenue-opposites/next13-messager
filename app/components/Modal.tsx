@@ -4,13 +4,13 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { IoClose } from 'react-icons/io5'
 
-interface ModelProps {
+interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
   children: React.ReactNode
 }
 
-const Model: React.FC<ModelProps> = ({
+const Modal: React.FC<ModalProps> = ({
   isOpen = false,
   onClose,
   children
@@ -54,7 +54,7 @@ const Model: React.FC<ModelProps> = ({
             <Dialog.Panel
               className="
                   relative transform overflow-hidden
-                  rounded-lg bg-white pb-4 px-4 w-full
+                  rounded-lg bg-white p-4 w-full
                   text-left shadow-xsl transition-all
                   sm:my-8 sm:w-full sm:max-w-lg sm:p-6 
                 "
@@ -87,4 +87,4 @@ const Model: React.FC<ModelProps> = ({
   )
 }
 
-export default Model
+export default Modal

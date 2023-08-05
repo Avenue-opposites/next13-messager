@@ -2,8 +2,9 @@
 import { User } from '@prisma/client'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import Avatar from '~/app/components/Avatar'
+import LoadingModal from '~/app/components/LoadingModal'
 
 interface UserBoxProps {
   data: User
@@ -23,52 +24,55 @@ const UserBox: React.FC<UserBoxProps> = ({
       isGroup: false,
       userId: data.id,
     })
-    // 当请求成功后，跳转到会话页面
-    .then((response) => {
-      // console.log(response);
-      router.push(`/conversations/${response.data.id}`)
-    })
-    .finally(() => setIsLoading(false))
-  },[router, data])
+      // 当请求成功后，跳转到会话页面
+      .then((response) => {
+        // console.log(response);
+        router.push(`/conversations/${response.data.id}`)
+      })
+      .finally(() => setIsLoading(false))
+  }, [router, data])
 
   return (
-    <div 
-      onClick={handleClick}
-      className="
-        w-full
-        relative
-        flex items-center
-        space-x-3
-        bg-white
-        hover:bg-neutral-100
-        p-3
-        rounded-lg
-        transition-colors
-        cursor-pointer
-      "
-    >
-      <Avatar user={data} />
-      <div className="min-w-0 flex-1">
-        <div className="focus:outline-none">
-          <div 
-            className="
-              flex justify-between items-center
-              mb-1
-            "
-          >
-            <p 
+    <Fragment>
+      {isLoading && <LoadingModal />}
+      <div
+        onClick={handleClick}
+        className="
+          w-full
+          relative
+          flex items-center
+          space-x-3
+          bg-white
+          hover:bg-neutral-100
+          p-3
+          rounded-lg
+          transition-colors
+          cursor-pointer
+        "
+      >
+        <Avatar user={data} />
+        <div className="min-w-0 flex-1">
+          <div className="focus:outline-none">
+            <div
               className="
-                text-sm
-                font-medium
-                text-gray-900
+                flex justify-between items-center
+                mb-1
               "
             >
-              {data.name}
-            </p>
+              <p
+                className="
+                  text-sm
+                  font-medium
+                  text-gray-900
+                "
+              >
+                {data.name}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   )
 }
 

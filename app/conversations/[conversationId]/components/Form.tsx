@@ -6,23 +6,26 @@ import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2'
 
 import useConversation from '~/app/hooks/useConversation'
 import MessageInput from './MessageInput'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 
 export type FormProps = {
   message: string;
 } & FieldValues
 
 const Form = () => {
+  const router = useRouter()
   const { conversationId } = useConversation()
-  const { 
-    register, 
-    handleSubmit, 
-    setValue, 
-    formState:{ 
-      errors 
-    } 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: {
+      errors
+    }
   } = useForm<FormProps>({
     defaultValues: {
-      message:''
+      message: ''
     }
   })
 
@@ -33,13 +36,15 @@ const Form = () => {
       ...data,
       conversationId
     })
+      .catch(() => toast.error("发送失败, 连接服务器出错!"))
   }
 
-  const handleUpload = (result: any) => {    
+  const handleUpload = (result: any) => {
     axios.post("/api/messages", {
       image: result?.info?.secure_url,
       conversationId
     })
+      .catch(() => toast.error("发送失败, 连接服务器出错!"))
 
   }
   return (
@@ -58,8 +63,8 @@ const Form = () => {
         onUpload={handleUpload}
         uploadPreset="tvqempvu"
       >
-        <HiPhoto 
-          size={30} 
+        <HiPhoto
+          size={30}
           className="
             text-sky-500 
             hover:text-sky-600
@@ -67,18 +72,18 @@ const Form = () => {
           "
         />
       </CldUploadButton>
-      <form 
+      <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center gap-2 lg:gap-4 w-full"  
+        className="flex items-center gap-2 lg:gap-4 w-full"
       >
-        <MessageInput 
+        <MessageInput
           id="message"
           register={register}
           errors={errors}
           required
           placeholder="Write a message"
         />
-        <button 
+        <button
           type="submit"
           className="
             rounded-full 
@@ -89,8 +94,8 @@ const Form = () => {
             cursor-pointer
           "
         >
-          <HiPaperAirplane 
-            size={18} 
+          <HiPaperAirplane
+            size={18}
             className="text-white"
           />
         </button>

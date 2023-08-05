@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-// import { User, Message, Conversation } from '@prisma/client'
 import { format } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import clsx from 'clsx'
@@ -8,6 +7,7 @@ import clsx from 'clsx'
 import { FullConversationType } from '~/types'
 import useOtherUser from '~/app/hooks/useOtherUser'
 import Avatar from '~/app/components/Avatar'
+import AvatarGroup from '~/app/components/AvaterGroup'
 
 interface ConversationBoxProps {
   data: FullConversationType,
@@ -30,7 +30,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   const lastMessage = useMemo(() => {
     const messages = data.messages || []
     return messages[messages.length - 1]
-  },[data.messages])
+  }, [data.messages])
 
   // 用户邮箱
   const userEmail = useMemo(() => {
@@ -40,31 +40,31 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   // 是否已读
   const hasSeen = useMemo(() => {
     // 如果没有最后一条消息，返回false
-    if(!lastMessage) 
+    if (!lastMessage)
       return false
 
     // 如果没有seenBy字段，返回false
     const seenBy = lastMessage?.seenBy || []
     // 如果没有用户邮箱，返回false
-    if(!userEmail)
+    if (!userEmail)
       return false
-    
+
     return seenBy.some((user) => user.email === userEmail)
-  },[lastMessage, userEmail])
+  }, [lastMessage, userEmail])
 
   const lastMessageText = useMemo(() => {
-    if(lastMessage?.image)
+    if (lastMessage?.image)
       return 'Sent an image'
 
-    if(lastMessage?.body) 
+    if (lastMessage?.body)
       return lastMessage.body
 
     return 'Started a conversation'
-  },[lastMessage])
+  }, [lastMessage])
 
-  
+
   return (
-    <div 
+    <div
       onClick={handleClick}
       className={clsx(`
         w-full
@@ -80,10 +80,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
         selected ? 'bg-neutral-100' : 'bg-white'
       )}
     >
-      <Avatar user={OtherUser} />
+      {
+        data.isGroup
+          ? <AvatarGroup users={data.users} />
+          : <Avatar user={OtherUser} />
+      }
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
-          <div 
+          <div
             className="
               flex justify-between items-center
               mb-1
@@ -100,7 +104,7 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
               )
             }
           </div>
-          <p 
+          <p
             className={clsx(`
               truncate
               text-sm

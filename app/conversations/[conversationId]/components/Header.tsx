@@ -7,32 +7,36 @@ import Avatar from '~/app/components/Avatar'
 import useOtherUser from '~/app/hooks/useOtherUser'
 import { FullConversationType } from '~/types'
 import ProfileDrawer from './ProfileDrawer'
+import AvatarGroup from '~/app/components/AvaterGroup'
+import useActiveList from '~/app/hooks/useActiveList'
 
 interface HeaderProps {
   conversation: Omit<FullConversationType, 'messages'>
 }
 
-const Header:React.FC<HeaderProps> = ({
+const Header: React.FC<HeaderProps> = ({
   conversation
 }) => {
   const otherUser = useOtherUser(conversation)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const { members } = useActiveList()
+  const isActive = members.includes(otherUser.email!)
   const statusText = useMemo(() => {
-    if(conversation.isGroup) {
+    if (conversation.isGroup) {
       return `${conversation.users.length} members`
-    } 
+    }
 
-    return 'Active'
-  },[conversation])
+    return isActive ? 'Active' : 'Offline'
+  }, [conversation, isActive])
   return (
-    <Fragment> 
-      <ProfileDrawer 
+    <Fragment>
+      <ProfileDrawer
         data={conversation}
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       />
-      <div 
-      className="
+      <div
+        className="
         bg-white
         w-full
         flex justify-between items-center
@@ -42,11 +46,11 @@ const Header:React.FC<HeaderProps> = ({
         lg:px-6
         shadow-sm
       "
-    >
-      <div className="flex gap-3 items-center">
-        <Link 
-          href="/conversation"
-          className="
+      >
+        <div className="flex gap-3 items-center">
+          <Link
+            href="/conversations"
+            className="
             block
             text-sky-500
             hover:text-sky-600
@@ -54,29 +58,33 @@ const Header:React.FC<HeaderProps> = ({
             cursor-pointer
             lg:hidden
           "
-        >
-          <HiChevronLeft size={32} />
-        </Link>
-        <Avatar user={otherUser} />
-        <div className="flex flex-col">
-          <div>
-            {conversation.name || otherUser.name}
-          </div>
-          <div className="text-sm font-light  text-neutral-500">
-            {statusText}
+          >
+            <HiChevronLeft size={32} />
+          </Link>
+          {
+            conversation.isGroup
+              ? <AvatarGroup users={conversation.users} />
+              : <Avatar user={otherUser} />
+          }
+          <div className="flex flex-col">
+            <div>
+              {conversation.name || otherUser.name}
+            </div>
+            <div className="text-sm font-light  text-neutral-500">
+              {statusText}
+            </div>
           </div>
         </div>
-      </div>
-      <HiEllipsisHorizontal 
-        className="
+        <HiEllipsisHorizontal
+          className="
           text-sky-500 
           cursor-pointer 
           hover:text-sky-600 
           transition-colors
           "
-        size={32} 
-        onClick={() => setDrawerOpen(true)}
-      />
+          size={32}
+          onClick={() => setDrawerOpen(true)}
+        />
       </div>
     </Fragment>
   )

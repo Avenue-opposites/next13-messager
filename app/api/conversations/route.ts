@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import prisma from "~/app/libs/prismadb";
 import getCurrentUser from "~/app/actions/getCurrentUser";
+import { pusherServer } from "~/app/libs/pusher";
 
 export async function POST(request: Request) {
   try {
@@ -47,6 +48,12 @@ export async function POST(request: Request) {
         }
       })
 
+      conversation.users.map(user => {
+        if(user.email) {
+          pusherServer.trigger(user.email, 'conversation:new', conversation)
+        }
+      })
+
       return NextResponse.json(conversation)
     }
 
@@ -88,6 +95,13 @@ export async function POST(request: Request) {
         // 如果需要返回会话成员，可以使用include
         include: {
           users: true
+        }
+      })
+
+      conversation.users.map(user => {
+        if(user.email) {
+          // 推送新创建的会话
+          pusherServer.trigger(user.email, 'conversation:new', conversation)
         }
       })
 
